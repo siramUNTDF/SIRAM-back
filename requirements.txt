@@ -1,0 +1,15 @@
+Django>=5.2,<5.3
+djangorestframework
+djangorestframework-simplejwt
+djangorestframework-camel-case
+django-filter
+drf-spectacular
+django-cors-headers
+python-dotenv
+pyotp
+whitenoise
+openpyxl
+reportlab
+psycopg[binary]
+gunicorn
+tzdata

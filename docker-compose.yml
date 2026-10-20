@@ -1,0 +1,47 @@
+# SIRAM — contenedores (RT.05): base PostgreSQL, API Django y Nginx como reverse proxy (HTTPS: RT.08).
+# Uso:  cp .env.example .env  (completar DJANGO_SECRET_KEY y POSTGRES_PASSWORD)  →  docker compose up --build
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: siram
+      POSTGRES_USER: siram
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?definir POSTGRES_PASSWORD en .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U siram -d siram"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DJANGO_DEBUG: "false"
+      POSTGRES_DB: siram
+      POSTGRES_USER: siram
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - media:/app/media
+      - respaldos:/app/respaldos
+
+  nginx:
+    image: nginx:1.27
+    depends_on: [api]
+    ports:
+      - "80:80"
+      # - "443:443"   # al habilitar TLS: montar certificados y activar el bloque 443 de nginx/default.conf
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Build del front (npm run build en siram-front): se sirve en "/"
+      - ${FRONT_DIST:-./nginx/vacio}:/usr/share/nginx/html:ro
+
+volumes:
+  pgdata:
+  media:
+  respaldos:
