@@ -10,7 +10,9 @@ dentro del caso y los estados son cinco.
 ## Puesta en marcha (desarrollo)
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv            # crear el entorno virtual
+.venv\Scripts\Activate.ps1      # activar el entorno virtual para Windows
+source .venv/bin/activate       # activar el entorno virtual para Linux/macOS
 pip install -r requirements.txt
 cp .env.example .env            # sin POSTGRES_DB usa SQLite
 python manage.py migrate
