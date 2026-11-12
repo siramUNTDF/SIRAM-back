@@ -1,0 +1,24 @@
+schema: spec-driven
+
+context: |
+  SIRAM-back: API Django 5.2 + Django REST Framework.
+  Leer AGENTS.md y openspec/README.md antes de preparar un cambio.
+  Dominio: siramUNTDF/siram-proyecto, CONTEXTO.md y modelo/decisiones.md.
+  modelo/siram.mmd declara v2 en borrador: no afirmar implementación completa.
+  Consumidor: siramUNTDF/siram-front; sus mocks no son el contrato vigente de esta API.
+  Contrato actual: URLs, serializers y OpenAPI generada por drf-spectacular.
+  Distinguir comportamiento actual, requisito pendiente y resultado verificado.
+  Actualizar MEMORY.md en siram-proyecto al cerrar cada cambio significativo o PR.
+  Esta estructura prepara el proceso; no especifica retrospectivamente toda la API.
+
+rules:
+  proposal:
+    - Explicar problema, evidencia actual, alcance y exclusiones; citar reglas y capacidades afectadas.
+    - Separar requisitos todavía no implementados de compatibilidad que deba conservarse.
+  specs:
+    - Incluir escenarios observables de éxito, errores y permisos pertinentes.
+  design:
+    - Explicar decisiones de API, datos, migraciones, permisos y transacciones cuando correspondan.
+  tasks:
+    - Separar implementación de verificación; registrar comandos, resultados y bloqueos.
+    - Incluir revisión del diff, sincronización de specs y cierre en memoria compartida.
