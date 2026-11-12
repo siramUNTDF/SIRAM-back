@@ -1,11 +1,16 @@
 # SIRAM — backend
 
 API REST (Django + Django REST Framework) de **SIRAM**, el Sistema Integrado de Registro de Ataques y
-Mordeduras. Es el backend del front <https://github.com/dddarioDLC/siram-front> (React + Vite + MUI).
+Mordeduras. Es el backend del front <https://github.com/siramUNTDF/siram-front> (React + Vite + MUI).
 
-El front es la fuente de la narrativa de uso (`docs/narrativa.md` de ese repo). Donde el PDF de requisitos
-y el front difieren, **se siguió al front**: no hay formulario público ni cola de validación, la denuncia vive
-dentro del caso y los estados son cinco.
+Para contribuir: [instrucciones de trabajo](AGENTS.md) y [proceso SDD](openspec/README.md).
+La memoria compartida se mantiene en `MEMORY.md` de
+[siram-proyecto](https://github.com/siramUNTDF/siram-proyecto).
+
+El backend implementa una narrativa anterior a la v2 de documentación. Hoy no implementa el canal
+ciudadano ni solicitudes; esto es una brecha respecto del dominio actual, no un requisito descartado.
+La denuncia vive dentro del caso y los estados son cinco. Contrastar cambios con `CONTEXTO.md`,
+`modelo/decisiones.md` y el estatus de borrador de `modelo/siram.mmd` en siram-proyecto.
 
 ## Puesta en marcha (desarrollo)
 
@@ -30,9 +35,10 @@ Con **PostgreSQL**: definir `POSTGRES_*` en `.env`. La búsqueda sin tildes (`nu
 
 1. En `siram-front/vite.config.js` agregar el proxy, así el front llama a `/api` sin CORS:
    `server: { proxy: { '/api': 'http://localhost:8000' } }`
-2. Reemplazar `src/mocks/index.js` por llamadas a la API. `GET /api/casos/` devuelve **la misma forma que
-   `src/mocks/casos.js`** (`id`, `fechaHecho`, `victima`, `lugar`, `animal`, `lesion`, `estado`, `motivoEspera`,
-   `unificadoEn`, `origen`, `marcas`), paginado: `{ count, next, previous, results }`.
+2. Acordar primero el contrato y adaptar `src/mocks/index.js` a consultas asíncronas. La respuesta actual
+   de `GET /api/casos/` (`id`, `fechaHecho`, `victima`, `lugar`, `animal`, `lesion`, `estado`, `motivoEspera`,
+   `unificadoEn`, `origen`, `marcas`) es paginada: `{ count, next, previous, results }`.
+   No coincide con el mock actual del front (`numero`, `animales`, `canalOrigen`, entre otras diferencias).
 3. `POST /api/auth/login/` devuelve `access` y `refresh` (JWT); enviar `Authorization: Bearer <access>`.
    Las claves JSON van en camelCase, y los parámetros de consulta en snake_case (`motivo_espera`, `page_size`).
 
@@ -68,8 +74,9 @@ Los chips de la Bandeja equivalen a `marca=…` o `estado=en_seguimiento`; los c
 
 ## Pendiente o por definir con los organismos
 
-- Formulario público (R.17), importación CSV (R.25), mapa y «fecha de novedad»: el front los marca como
-  pendientes; **no están implementados**.
+- En el backend faltan formulario público/solicitudes (R.17), importación CSV (R.25) y una consulta
+  específica para mapa. El front tiene pantallas con mocks; eso no verifica integración.
+  `actualizado_en` existe, pero el listado ordena por número por defecto y su serializer no lo expone.
 - Criterio para pasar a *Finalizado*, lista de motivos para desestimar y valores de «Tipo de evento»: hoy son
   texto libre / catálogo editable.
 - ¿Un agente puede editar casos de otro organismo? Hoy sí (`SIRAM_EDICION_ENTRE_ORGANISMOS=true`).
